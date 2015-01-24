@@ -89,7 +89,8 @@ public class Server {
                     // If no data, close the connection
                     if ((len == 0) || (len < 4)) {
 //                        System.out.println("here");
-                        continue;
+//                        continue;
+                        channel.close();
                     }
 
 
