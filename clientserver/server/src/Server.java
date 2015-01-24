@@ -44,7 +44,7 @@ public class Server {
 
     public void run() throws IOException {
         ServerSocketChannel channel = ServerSocketChannel.open();
-        channel.bind(new InetSocketAddress(localhost, port));
+        channel.bind(new InetSocketAddress("192.168.1.33", port));
         channel.configureBlocking(false);
         Selector selector = Selector.open();
         channel.register(selector, SelectionKey.OP_ACCEPT);
