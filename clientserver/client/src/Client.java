@@ -54,7 +54,7 @@ public class Client implements Runnable {
             long time = 0;
 
             channel.configureBlocking(false);
-            channel.connect(new InetSocketAddress("localhost", port));
+            channel.connect(new InetSocketAddress("192.168.1.51", port));
 
             while (!channel.finishConnect()) {
                 // System.out.println("still connecting");

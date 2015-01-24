@@ -21,39 +21,41 @@ public class Main {
         }
 
 
-        final ExecutorService executorService = Executors.newFixedThreadPool(4);
+        final ExecutorService executorService = Executors.newFixedThreadPool(8);
         final int clientCount = Integer.valueOf(args[0]);
         final String attempt = args[1];
 
         try (final Logger logger = new Logger(String.valueOf(clientCount) + attempt +".txt")) {
-//            ArrayList<Thread> tasks = new ArrayList<>();
-//            for (int i = 0; i < clientCount; i++) {
-//                Thread thread = new Thread(new Client(logger));
-//                tasks.add(thread);
-//            }
-//            for (Thread thread : tasks) {
-//                thread.start();
-//            }
-//
-//            for (Thread thread : tasks) {
-//                thread.join();
-//            }
-            List<Future<?>> clientFutures = new LinkedList<>();
+            ArrayList<Thread> tasks = new ArrayList<>();
             for (int i = 0; i < clientCount; i++) {
-                Client client = new Client(logger);
-                clientFutures.add(executorService.submit(client));
+                Thread thread = new Thread(new Client(logger));
+                tasks.add(thread);
+            }
+//            long begin = System.currentTimeMillis();
+            for (Thread thread : tasks) {
+                thread.start();
             }
 
-            for (Future<?> future: clientFutures) {
-                future.get();
+            for (Thread thread : tasks) {
+                thread.join();
             }
-            executorService.shutdown();
+//            long end = System.currentTimeMillis();
+//            System.out.println((end-begin) + " " + (end-begin)/clientCount);
+//            logger.write((end-begin)/clientCount);
+//            List<Future<?>> clientFutures = new LinkedList<>();
+//            for (int i = 0; i < clientCount; i++) {
+//                Client client = new Client(logger);
+//                clientFutures.add(executorService.submit(client));
+//            }
+//
+//            for (Future<?> future: clientFutures) {
+//                future.get();
+//            }
+//            executorService.shutdown();
         } catch (IOException e) {
             e.printStackTrace();
             executorService.shutdown();
         } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
             e.printStackTrace();
         }
     }

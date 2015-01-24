@@ -15,8 +15,7 @@ public class Logger implements AutoCloseable {
     }
 
     public void write(int value) throws IOException {
-        bw.write(String.valueOf(value));
-        bw.write("\n");
+        bw.write(String.valueOf(value) + "\n");
     }
 
     public void close() throws IOException {
