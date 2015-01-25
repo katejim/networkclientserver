@@ -20,7 +20,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Server {
     private final int port = 4444;
-    String localhost = "localhost";
     private final ServerData serverData;
     private ByteBuffer buffer = ByteBuffer.allocate(256);
     private ExecutorService executorService = Executors.newFixedThreadPool(4);
@@ -44,7 +43,7 @@ public class Server {
 
     public void run() throws IOException {
         ServerSocketChannel channel = ServerSocketChannel.open();
-        channel.bind(new InetSocketAddress("192.168.1.33", port));
+        channel.bind(new InetSocketAddress("0.0.0.0", port));
         channel.configureBlocking(false);
         Selector selector = Selector.open();
         channel.register(selector, SelectionKey.OP_ACCEPT);
@@ -85,14 +84,9 @@ public class Server {
                     final SocketChannel clientChannel = (SocketChannel) selectionKey.channel();
                     int len = clientChannel.read(buffer);
 
-
-                    // If no data, close the connection
                     if ((len == 0) || (len < 4)) {
-//                        System.out.println("here");
-//                        continue;
-                        channel.close();
+                        clientChannel.close();
                     }
-
 
                     buffer.clear();
                     clientsData.put(selectionKey, clientsData.get(selectionKey).addByteBuffer(buffer, len));
@@ -125,13 +119,6 @@ public class Server {
                                 }
                             }
 
-//                            System.out.println("malefemale = " + dataMale.size() + " " + dataFemale.size());
-
-                            if ((dataFemale.size() == 0) || (dataMale.size() == 0)) {
-                                System.out.println("bad");
-//                            break;
-                            }
-
                             Pair<Person, Person> bestCompatibilityPair = new Pair<>(null, null);
                             int bestCompability = 0;
                             //find best pair
@@ -145,8 +132,6 @@ public class Server {
                                     }
                                 }
                             }
-
-//                            System.out.println(bestCompatibilityPair.getKey().getName() + " " + bestCompatibilityPair.getValue().getName() + " " + bestCompability);
 
                             ByteBuffer responseBuffer = ByteBuffer.allocate(12);
                             responseBuffer.putInt(bestCompatibilityPair.getKey().getName());
